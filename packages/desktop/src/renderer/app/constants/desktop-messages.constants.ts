@@ -294,9 +294,17 @@ export const DesktopMessages: {
     showToast: true
   }),
   ENVIRONMENT_MOVED: (messageParams) => ({
-    message: `Environment ${messageParams.environmentUUID} was moved to the new location.`,
+    message: 'Environment was moved to the new location.',
     log: true,
     loggerMessage: 'Environment was moved to the new location.',
+    logPayload: messageParams,
+    toastType: 'success',
+    showToast: true
+  }),
+  CLOUD_ENVIRONMENT_CONVERTED: (messageParams) => ({
+    message: `Environment "${messageParams.name}" was not present on the server and was converted to a local environment.`,
+    log: true,
+    loggerMessage: `Environment "${messageParams.name}" was not present on the server and was converted to a local environment.`,
     logPayload: messageParams,
     toastType: 'success',
     showToast: true

@@ -33,7 +33,8 @@ export const SharedConfig = (options: {
       headers: docsURL + 'response-configuration/response-headers/',
       rules: docsURL + 'route-responses/multiple-responses/',
       hostname: docsURL + 'server-configuration/listening-hostname/',
-      faq: options.websiteURL + 'faq/'
+      faq: options.websiteURL + 'faq/',
+      cloudSync: docsURL + 'cloud/data-sync/'
     },
     loginURL: `${options.websiteURL}login/?inapp=true`,
     signupURL: `${options.websiteURL}signup/?inapp=true`,

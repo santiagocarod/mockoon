@@ -8,6 +8,8 @@ export type ContextMenuEvent = {
 export type ContextMenuItemPayload = {
   subject: DataSubject;
   action:
+    | 'cloudSyncEnable'
+    | 'convertToLocal'
     | 'add_crud_route'
     | 'add_http_route'
     | 'add_folder'

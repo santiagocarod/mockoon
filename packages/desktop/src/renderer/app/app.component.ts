@@ -21,6 +21,7 @@ import { EnvironmentsService } from 'src/renderer/app/services/environments.serv
 import { EventsService } from 'src/renderer/app/services/events.service';
 import { RemoteConfigService } from 'src/renderer/app/services/remote-config.service';
 import { SettingsService } from 'src/renderer/app/services/settings.service';
+import { SyncService } from 'src/renderer/app/services/sync.service';
 import { TelemetryService } from 'src/renderer/app/services/telemetry.service';
 import { ToastsService } from 'src/renderer/app/services/toasts.service';
 import { TourService } from 'src/renderer/app/services/tour.service';
@@ -54,7 +55,8 @@ export class AppComponent extends Logger implements OnInit {
     private userService: UserService,
     private title: Title,
     private tourService: TourService,
-    private remoteConfigService: RemoteConfigService
+    private remoteConfigService: RemoteConfigService,
+    private syncService: SyncService
   ) {
     super('[RENDERER][COMPONENT][APP] ', toastService);
 
@@ -113,6 +115,7 @@ export class AppComponent extends Logger implements OnInit {
     this.appQuitService.init().subscribe();
     this.remoteConfigService.init().subscribe();
     this.userService.init().subscribe();
+    this.syncService.init().subscribe();
     this.apiService.init();
 
     this.logMessage('info', 'INITIALIZING_APP');
@@ -154,6 +157,16 @@ export class AppComponent extends Logger implements OnInit {
    */
   public contextMenuItemClicked(payload: ContextMenuItemPayload) {
     switch (payload.action) {
+      case 'cloudSyncEnable':
+        this.environmentsService
+          .duplicateToCloud(payload.subjectUUID)
+          .subscribe();
+        break;
+      case 'convertToLocal':
+        this.environmentsService
+          .convertCloudToLocal(payload.subjectUUID)
+          .subscribe();
+        break;
       case 'duplicate':
         if (payload.subject === 'route') {
           this.environmentsService.duplicateRoute(

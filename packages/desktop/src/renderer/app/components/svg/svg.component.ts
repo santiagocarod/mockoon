@@ -93,6 +93,11 @@ export class SvgComponent {
     | 'command_palette'
     | 'chevron_left'
     | 'chevron_right'
+    | 'cloud'
+    | 'cloud_off'
+    | 'cloud_add'
+    | 'cloud_remove'
+    | 'computer'
     | string;
 
   constructor() {}

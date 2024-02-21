@@ -28,7 +28,7 @@ export const createMenu = (mainWindow: BrowserWindow): Menu => {
       submenu: [
         {
           id: 'MENU_NEW_ENVIRONMENT',
-          label: 'New environment',
+          label: 'New local environment',
           accelerator: 'CmdOrCtrl+N',
           click: () => {
             mainWindow.webContents.send('APP_MENU', 'NEW_ENVIRONMENT');
@@ -36,7 +36,7 @@ export const createMenu = (mainWindow: BrowserWindow): Menu => {
         },
         {
           id: 'MENU_NEW_ENVIRONMENT_CLIPBOARD',
-          label: 'New environment from clipboard',
+          label: 'New local environment from clipboard',
           click: () => {
             mainWindow.webContents.send(
               'APP_MENU',
@@ -46,7 +46,7 @@ export const createMenu = (mainWindow: BrowserWindow): Menu => {
         },
         {
           id: 'MENU_OPEN_ENVIRONMENT',
-          label: 'Open environment',
+          label: 'Open local environment',
           accelerator: 'CmdOrCtrl+O',
           click: () => {
             mainWindow.webContents.send('APP_MENU', 'OPEN_ENVIRONMENT');
@@ -54,7 +54,7 @@ export const createMenu = (mainWindow: BrowserWindow): Menu => {
         },
         {
           id: 'MENU_DUPLICATE_ENVIRONMENT',
-          label: 'Duplicate current environment',
+          label: 'Duplicate current environment to local',
           accelerator: 'CmdOrCtrl+D',
           click: () => {
             mainWindow.webContents.send('APP_MENU', 'DUPLICATE_ENVIRONMENT');

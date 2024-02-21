@@ -12,7 +12,10 @@ import {
   SaveDialogReturnValue,
   app
 } from 'electron';
-import { Settings } from 'src/shared/models/settings.model';
+import {
+  EnvironmentDescriptor,
+  Settings
+} from 'src/shared/models/settings.model';
 
 export interface MainAPIModel {
   invoke(
@@ -23,7 +26,7 @@ export interface MainAPIModel {
   invoke(
     channel: 'APP_WRITE_ENVIRONMENT_DATA',
     data: Environment,
-    path: string,
+    descriptor: EnvironmentDescriptor,
     storagePrettyPrint?: boolean
   ): Promise<void>;
   invoke(
@@ -44,12 +47,13 @@ export interface MainAPIModel {
   invoke(
     channel:
       | 'APP_GET_MIME_TYPE'
+      | 'APP_GET_HASH'
       | 'APP_GET_FILENAME'
       | 'APP_READ_FILE'
       | 'APP_BUILD_STORAGE_FILEPATH'
       | 'APP_GET_BASE_PATH'
       | 'APP_REPLACE_FILEPATH_EXTENSION',
-    pathOrName: string
+    pathOrNameOrString: string
   ): Promise<string>;
   invoke(channel: 'APP_WRITE_FILE', path: string, data: string): Promise<void>;
   invoke(

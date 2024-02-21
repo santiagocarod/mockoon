@@ -1,3 +1,4 @@
+import { SyncPresence } from '@mockoon/cloud';
 import { Environments } from '@mockoon/commons';
 import {
   CallbackSpecTabNameType,
@@ -88,4 +89,10 @@ export type StoreType = {
   };
   user: User;
   callbackSettings: CallbackSettings;
+  sync: {
+    status: boolean;
+    presence: SyncPresence;
+    offlineReason: string | null;
+    alert: string | null;
+  };
 };

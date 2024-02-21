@@ -4,6 +4,7 @@
     activeEnvironment: activeEnvironment$ | async,
     activeEnvironmentState: activeEnvironmentState$ | async,
     activeView: activeView$ | async,
+    sync: sync$ | async,
     os: os$ | async
   } as data"
 >
@@ -71,17 +72,36 @@
       </ul>
     </div>
 
-    <div class="ms-auto">
-      <button
-        type="button"
-        class="btn btn-link btn-icon"
-        [ngbTooltip]="
-          'Command palette (' + (data.os === 'darwin' ? 'Cmd' : 'Ctrl') + '+P)'
-        "
-        (click)="openCommandPalette()"
-      >
-        <app-svg class="align-bottom" icon="command_palette"></app-svg>
-      </button>
+    <div class="ms-auto d-flex align-items-center">
+      <div>
+        <button
+          type="button"
+          class="btn btn-link btn-icon"
+          [ngbTooltip]="
+            'Command palette (' +
+            (data.os === 'darwin' ? 'Cmd' : 'Ctrl') +
+            '+P)'
+          "
+          (click)="openCommandPalette()"
+        >
+          <app-svg class="align-bottom" icon="command_palette"></app-svg>
+        </button>
+      </div>
+    </div>
+
+    <div
+      *ngIf="
+        data.sync.status && data.sync.presence && data.sync.presence.devices > 1
+      "
+      ngbTooltip="{{ data.sync.presence.devices - 1 }} other {{
+        data.sync.presence.devices - 1 > 1 ? 'devices' : 'device'
+      }} connected"
+      class="badge badge-custom align-middle"
+    >
+      <app-svg icon="computer"></app-svg>
+      <span class="number-indicator">
+        {{ data.sync.presence.devices - 1 }}
+      </span>
     </div>
 
     <div ngbDropdown placement="bottom-right" #dropdownElement>
@@ -91,8 +111,8 @@
         ngbDropdownToggle
       >
         <span [ngClass]="{ 'with-indicator': !!data.user }">
-          <app-svg icon="account"></app-svg
-        ></span>
+          <app-svg icon="account"></app-svg>
+        </span>
       </button>
       <div class="dropdown-menu" ngbDropdownMenu>
         <ng-container *ngIf="!!data.user">
@@ -138,6 +158,17 @@
             <app-svg icon="open_in_new" class="ps-2"></app-svg>
           </button>
         </ng-container>
+
+        <!-- TBR -->
+        <div>
+          debug
+          <button class="btn dropdown-item" (click)="simulateTokenExp()">
+            simulate token exp
+          </button>
+          <button class="btn dropdown-item" (click)="disconnect()">
+            disconnect
+          </button>
+        </div>
       </div>
     </div>
   </div>

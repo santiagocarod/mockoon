@@ -22,6 +22,7 @@ import { browserLocalPersistence, connectAuthEmulator } from 'firebase/auth';
 import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { BannerComponent } from 'src/renderer/app/components/banner/banner.component';
+import { CloudWarningComponent } from 'src/renderer/app/components/cloud-warning/cloud-warning.component';
 import { ContextMenuComponent } from 'src/renderer/app/components/context-menu/context-menu.component';
 import { CustomSelectComponent } from 'src/renderer/app/components/custom-select/custom-select.component';
 import { EditableElementComponent } from 'src/renderer/app/components/editable-element/editable-element.component';
@@ -117,7 +118,8 @@ import { AppComponent } from './app.component';
     ToggleComponent,
     SvgComponent,
     EditableElementComponent,
-    TourComponent
+    TourComponent,
+    CloudWarningComponent
   ],
   imports: [
     BrowserAnimationsModule,

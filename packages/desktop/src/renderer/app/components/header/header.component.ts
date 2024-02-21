@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Environment } from '@mockoon/commons';
-import { BehaviorSubject, Observable, from } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { BehaviorSubject, EMPTY, Observable, from } from 'rxjs';
+import { catchError, filter, map } from 'rxjs/operators';
 import { MainAPI } from 'src/renderer/app/constants/common.constants';
 import { EnvironmentLog } from 'src/renderer/app/models/environment-logs.model';
 import {
@@ -10,7 +10,7 @@ import {
 } from 'src/renderer/app/models/store.model';
 import { User } from 'src/renderer/app/models/user.model';
 import { EnvironmentsService } from 'src/renderer/app/services/environments.service';
-import { EventsService } from 'src/renderer/app/services/events.service';
+import { SyncService } from 'src/renderer/app/services/sync.service';
 import { UIService } from 'src/renderer/app/services/ui.service';
 import { UserService } from 'src/renderer/app/services/user.service';
 import { Store } from 'src/renderer/app/stores/store';
@@ -30,13 +30,13 @@ export class HeaderComponent implements OnInit {
   public activeEnvironmentState$: Observable<EnvironmentStatus>;
   public environmentLogs$: Observable<EnvironmentLog[]>;
   public os$: Observable<string>;
+  public sync$ = this.store.select('sync');
   public tabs: {
     id: ViewsNameType;
     title: string;
     icon: string;
     count$?: Observable<number>;
   }[];
-
   public planLabels = {
     FREE: 'Free',
     SOLO: 'Solo',
@@ -52,8 +52,8 @@ export class HeaderComponent implements OnInit {
     private store: Store,
     private environmentsService: EnvironmentsService,
     private userService: UserService,
-    private eventsService: EventsService,
-    private uiService: UIService
+    private uiService: UIService,
+    private syncService: SyncService
   ) {}
 
   ngOnInit() {
@@ -167,9 +167,26 @@ export class HeaderComponent implements OnInit {
    */
   public refreshAccount() {
     this.refreshingAccount$.next(true);
-    this.userService.getUserInfo().subscribe(() => {
-      this.refreshingAccount$.next(false);
-    });
+    this.userService
+      .getUserInfo()
+      .pipe(
+        catchError(() => {
+          this.refreshingAccount$.next(false);
+
+          return EMPTY;
+        })
+      )
+      .subscribe(() => {
+        this.refreshingAccount$.next(false);
+      });
+  }
+
+  public disconnect() {
+    this.syncService.disconnect();
+  }
+
+  public simulateTokenExp() {
+    this.syncService.expireToken();
   }
 
   /**

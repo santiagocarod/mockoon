@@ -8,6 +8,7 @@ import {
   addFolderMutator,
   addRouteMutator,
   addRouteResponseMutator,
+  fullReorderEntitiesMutator,
   moveItemAtTarget,
   removeCallbackMutator,
   removeDatabucketMutator,
@@ -51,6 +52,26 @@ export const environmentReducer = (
   let newState: StoreType;
 
   switch (action.type) {
+    case ActionTypes.CONVERT_ENVIRONMENT_TO_LOCAL: {
+      newState = {
+        ...state,
+        settings: {
+          ...state.settings,
+          environments: state.settings.environments.map((environment) => {
+            if (environment.uuid === action.environmentUuid) {
+              return {
+                ...environment,
+                cloud: false
+              };
+            }
+
+            return environment;
+          })
+        }
+      };
+      break;
+    }
+
     case ActionTypes.UPDATE_USER: {
       newState = {
         ...state,
@@ -58,6 +79,14 @@ export const environmentReducer = (
           action.properties === null
             ? null
             : { ...state.user, ...action.properties }
+      };
+      break;
+    }
+
+    case ActionTypes.UPDATE_SYNC: {
+      newState = {
+        ...state,
+        sync: { ...state.sync, ...action.properties }
       };
       break;
     }
@@ -255,6 +284,27 @@ export const environmentReducer = (
       break;
     }
 
+    case ActionTypes.FULL_REORDER_ENTITIES: {
+      const newEnvironments = state.environments.map((environment) => {
+        if (environment.uuid === action.environmentUuid) {
+          return fullReorderEntitiesMutator(
+            environment,
+            action.entity,
+            action.order,
+            action.parentId
+          );
+        }
+
+        return environment;
+      });
+
+      newState = {
+        ...state,
+        environments: newEnvironments
+      };
+      break;
+    }
+
     case ActionTypes.REORDER_CALLBACKS: {
       const newEnvironments = state.environments.map((environment) => {
         if (environment.uuid === action.environmentUuid) {
@@ -385,17 +435,22 @@ export const environmentReducer = (
           environments: [...state.settings.environments]
         };
 
+        const newEnvironmentDescriptor: EnvironmentDescriptor = {
+          uuid: newEnvironment.uuid,
+          path: action.filePath,
+          cloud: action.cloud,
+          lastServerHash: action.hash
+        };
+
         // we may be reloading or duplicating so we want to keep the descriptors order
         if (action.insertAfterIndex != null) {
-          newSettings.environments.splice(action.insertAfterIndex + 1, 0, {
-            uuid: newEnvironment.uuid,
-            path: action.filePath
-          });
+          newSettings.environments.splice(
+            action.insertAfterIndex + 1,
+            0,
+            newEnvironmentDescriptor
+          );
         } else {
-          newSettings.environments.push({
-            uuid: newEnvironment.uuid,
-            path: action.filePath
-          });
+          newSettings.environments.push(newEnvironmentDescriptor);
         }
       }
 
@@ -1203,6 +1258,28 @@ export const environmentReducer = (
       newState = {
         ...state,
         settings: { ...state.settings, ...action.properties }
+      };
+      break;
+    }
+
+    case ActionTypes.UPDATE_SETTINGS_ENVIRONMENT_DESCRIPTOR: {
+      newState = {
+        ...state,
+        settings: {
+          ...state.settings,
+          environments: state.settings.environments.map(
+            (environmentDescriptor) => {
+              if (environmentDescriptor.uuid === action.descriptor.uuid) {
+                return {
+                  ...environmentDescriptor,
+                  ...action.descriptor
+                };
+              }
+
+              return environmentDescriptor;
+            }
+          )
+        }
       };
       break;
     }

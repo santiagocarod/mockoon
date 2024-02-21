@@ -62,6 +62,7 @@ export class UserService {
         })
       ),
       tap((info: User) => {
+        console.log('updae user info');
         this.store.update(updateUserAction({ ...info }));
       }),
       catchError(() => EMPTY)
