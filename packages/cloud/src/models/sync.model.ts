@@ -97,6 +97,7 @@ export const SyncActionTypesToReorderableContainers = {
 export interface GetFullEnvironmentSyncAction extends BaseSyncAction {
   type: SyncActionTypes.GET_FULL_ENVIRONMENT;
   environmentUuid: string;
+  receive: 'UPDATE' | 'CREATE';
 }
 
 /**

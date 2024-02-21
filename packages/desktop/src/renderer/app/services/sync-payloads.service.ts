@@ -239,12 +239,14 @@ export class SyncPayloadsService {
    */
   public getFullEnvironmentActionBuilder(
     environmentUuid: string,
+    receive: GetFullEnvironmentSyncAction['receive'],
     timeDifference: number
   ): GetFullEnvironmentSyncAction {
     return {
       type: SyncActionTypes.GET_FULL_ENVIRONMENT,
       timestamp: Date.now() + timeDifference,
-      environmentUuid
+      environmentUuid,
+      receive
     };
   }
 

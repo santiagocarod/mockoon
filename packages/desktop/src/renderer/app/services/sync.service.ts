@@ -3,6 +3,7 @@ import {
   BaseSyncAction,
   DownSyncActions,
   EnvironmentsListPayload,
+  GetFullEnvironmentSyncAction,
   ServerAcknowledgment,
   SyncActions,
   SyncErrors,
@@ -290,11 +291,14 @@ export class SyncService {
 
         // if local hash is null or different, push or pull the environment
         if (
-          hashResult.hash === null ||
+          hashResult.hash !== null &&
           hashResult.hash !== hashResult.serverHash
         ) {
-          // server version changed, pull
-          if (hashResult.lastServerHash !== hashResult.serverHash) {
+          // server version changed, and local version changed too, compared to the last server version, prompt the user to choose
+          if (
+            hashResult.lastServerHash !== hashResult.serverHash &&
+            hashResult.hash !== hashResult.lastServerHash
+          ) {
             observable$ = this.uiService
               .showConfirmDialog({
                 title: 'Conflict detected',
@@ -312,21 +316,47 @@ export class SyncService {
                 tap((result) => {
                   if (result) {
                     // accept remote and pull
-                    this.sendGetFullEnvironment(hashResult.environmentUuid);
+                    this.sendGetFullEnvironment(
+                      hashResult.environmentUuid,
+                      'UPDATE'
+                    );
                   } else {
                     // keep local and push
                     this.sendUpdateFullEnvironment(hashResult.environmentUuid);
                   }
                 })
               );
-          } else if (hashResult.lastServerHash === hashResult.serverHash) {
+          } else if (
+            hashResult.lastServerHash === hashResult.serverHash &&
+            hashResult.hash !== hashResult.lastServerHash
+          ) {
             // local version changed, but server's stayed the same, push
             observable$ = observable$.pipe(
               tap(() => {
                 this.sendUpdateFullEnvironment(hashResult.environmentUuid);
               })
             );
+          } else if (
+            hashResult.lastServerHash !== hashResult.serverHash &&
+            hashResult.hash === hashResult.lastServerHash
+          ) {
+            // local version didn't change, but server changed, pull
+            observable$ = observable$.pipe(
+              tap(() => {
+                this.sendGetFullEnvironment(
+                  hashResult.environmentUuid,
+                  'UPDATE'
+                );
+              })
+            );
           }
+        } else if (hashResult.hash === null) {
+          // local version does not exist, pull
+          observable$ = observable$.pipe(
+            tap(() => {
+              this.sendGetFullEnvironment(hashResult.environmentUuid, 'CREATE');
+            })
+          );
         }
 
         return observable$.pipe(
@@ -493,10 +523,14 @@ export class SyncService {
    *
    * @param environmentUuid
    */
-  private sendGetFullEnvironment(environmentUuid: string) {
+  private sendGetFullEnvironment(
+    environmentUuid: string,
+    receive: GetFullEnvironmentSyncAction['receive']
+  ) {
     const getFullEnvAction =
       this.syncPayloadsService.getFullEnvironmentActionBuilder(
         environmentUuid,
+        receive,
         this.timeDifference
       );
 
