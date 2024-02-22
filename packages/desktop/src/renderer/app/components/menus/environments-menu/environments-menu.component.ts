@@ -335,7 +335,10 @@ export class EnvironmentsMenuComponent implements OnInit, OnDestroy {
       const menu: ContextMenuEvent = {
         event,
         items: cloud
-          ? CloudEnvironmentsContextMenu(environmentUUID)
+          ? CloudEnvironmentsContextMenu(
+              environmentUUID,
+              this.store.get('sync').status
+            )
           : EnvironmentsContextMenu(
               environmentUUID,
               this.store.get('sync').status

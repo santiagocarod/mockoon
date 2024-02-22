@@ -670,26 +670,26 @@ export class EnvironmentsService extends Logger {
    * Duplicate an environment and save it to the cloud
    */
   public duplicateToCloud(environmentUuid: string) {
-    if (!this.environmentIsCloud(environmentUuid)) {
-      const environmentToDuplicate =
-        this.store.getEnvironmentByUUID(environmentUuid);
+    const environmentIsCloud = this.environmentIsCloud(environmentUuid);
 
-      // copy the environment, reset some properties and change name
-      let newEnvironment: Environment = {
-        ...CloneObject(environmentToDuplicate),
-        name: `${environmentToDuplicate.name} (cloud copy)`
-      };
+    const environmentToDuplicate =
+      this.store.getEnvironmentByUUID(environmentUuid);
 
-      newEnvironment = this.dataService.deduplicateUUIDs(newEnvironment, true);
+    // copy the environment, reset some properties and change name
+    let newEnvironment: Environment = {
+      ...CloneObject(environmentToDuplicate),
+      name: `${environmentToDuplicate.name} ${
+        environmentIsCloud ? '(copy)' : '(cloud copy)'
+      }`
+    };
 
-      return this.addEnvironment({
-        environment: newEnvironment,
-        promptSave: false,
-        cloud: true
-      });
-    }
+    newEnvironment = this.dataService.deduplicateUUIDs(newEnvironment, true);
 
-    return EMPTY;
+    return this.addEnvironment({
+      environment: newEnvironment,
+      promptSave: false,
+      cloud: true
+    });
   }
 
   public environmentIsCloud(environmentUuid: string) {

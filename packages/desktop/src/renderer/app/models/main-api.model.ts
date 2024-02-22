@@ -12,6 +12,7 @@ import {
   SaveDialogReturnValue,
   app
 } from 'electron';
+import { MenuStateUpdatePayload } from 'src/shared/models/ipc.model';
 import {
   EnvironmentDescriptor,
   Settings
@@ -75,17 +76,9 @@ export interface MainAPIModel {
   invoke(channel: 'APP_UNWATCH_FILE', UUID: string): Promise<void>;
   invoke(channel: 'APP_UNWATCH_ALL_FILE'): Promise<void>;
 
+  send(channel: 'APP_UPDATE_MENU_STATE', state: MenuStateUpdatePayload): void;
   send(channel: 'APP_WRITE_CLIPBOARD', data: any): void;
-  send(
-    channel:
-      | 'APP_DISABLE_ENVIRONMENT_MENU_ENTRIES'
-      | 'APP_ENABLE_ENVIRONMENT_MENU_ENTRIES'
-      | 'APP_DISABLE_ROUTE_MENU_ENTRIES'
-      | 'APP_ENABLE_ROUTE_MENU_ENTRIES'
-      | 'APP_QUIT'
-      | 'APP_HIDE_WINDOW'
-      | 'APP_APPLY_UPDATE'
-  ): void;
+  send(channel: 'APP_QUIT' | 'APP_HIDE_WINDOW' | 'APP_APPLY_UPDATE'): void;
   send(
     channel: 'APP_OPEN_EXTERNAL_LINK' | 'APP_SHOW_FILE',
     urlOrPath: string

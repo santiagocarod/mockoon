@@ -157,7 +157,7 @@ export class AppComponent extends Logger implements OnInit {
    */
   public contextMenuItemClicked(payload: ContextMenuItemPayload) {
     switch (payload.action) {
-      case 'cloudSyncEnable':
+      case 'duplicateToCloud':
         this.environmentsService
           .duplicateToCloud(payload.subjectUUID)
           .subscribe();

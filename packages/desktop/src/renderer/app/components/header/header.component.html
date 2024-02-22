@@ -9,7 +9,7 @@
   } as data"
 >
   <div class="header d-flex align-items-center">
-    <div *ngIf="data.activeEnvironment" appTourStep="tour-environment-start">
+    <div appTourStep="tour-environment-start">
       <button
         *ngIf="
           data.activeEnvironmentState?.running &&
@@ -19,6 +19,7 @@
         type="button"
         ngbTooltip="Server needs restart"
         (click)="toggleEnvironment()"
+        [disabled]="!data.activeEnvironment"
       >
         <app-svg icon="refresh" size="20"></app-svg>
       </button>
@@ -32,6 +33,7 @@
         type="button"
         ngbTooltip="Stop server"
         (click)="toggleEnvironment()"
+        [disabled]="!data.activeEnvironment"
       >
         <app-svg icon="stop" size="20"></app-svg>
       </button>
@@ -42,35 +44,37 @@
         type="button"
         ngbTooltip="Start server"
         (click)="toggleEnvironment()"
+        [disabled]="!data.activeEnvironment"
       >
         <app-svg icon="play_arrow" size="20"></app-svg>
       </button>
     </div>
 
-    <div *ngIf="data.activeEnvironment">
-      <ul class="nav nav-tabs">
-        <li
-          *ngFor="let tab of tabs"
-          class="nav-item"
-          [appTourStep]="tourIds[tab.id]"
+    <ul class="nav nav-tabs">
+      <li
+        *ngFor="let tab of tabs"
+        class="nav-item"
+        [appTourStep]="tourIds[tab.id]"
+      >
+        <a
+          class="nav-link d-flex align-items-center"
+          [ngClass]="{
+            active: data.activeView === tab.id && data.activeEnvironment,
+            disabled: !data.activeEnvironment
+          }"
+          (click)="setActiveView(tab.id)"
         >
-          <a
-            class="nav-link d-flex align-items-center"
-            [ngClass]="{ active: data.activeView === tab.id }"
-            (click)="setActiveView(tab.id)"
+          <app-svg [icon]="tab.icon" class="pe-2"></app-svg>
+          {{ tab.title }}
+          <span
+            *ngIf="tab.count$ | async as tabCount"
+            class="badge badge-hollow fw-bold ms-2"
           >
-            <app-svg [icon]="tab.icon" class="pe-2"></app-svg>
-            {{ tab.title }}
-            <span
-              *ngIf="tab.count$ | async as tabCount"
-              class="badge badge-hollow fw-bold ms-2"
-            >
-              {{ tabCount }}
-            </span>
-          </a>
-        </li>
-      </ul>
-    </div>
+            {{ tabCount }}
+          </span>
+        </a>
+      </li>
+    </ul>
 
     <div class="ms-auto d-flex align-items-center">
       <div>
@@ -90,9 +94,7 @@
     </div>
 
     <div
-      *ngIf="
-        data.sync.status && data.sync.presence && data.sync.presence.devices > 1
-      "
+      *ngIf="data.sync.status && data.sync.presence?.devices > 1"
       ngbTooltip="{{ data.sync.presence.devices - 1 }} other {{
         data.sync.presence.devices - 1 > 1 ? 'devices' : 'device'
       }} connected"
@@ -101,6 +103,19 @@
       <app-svg icon="computer"></app-svg>
       <span class="number-indicator">
         {{ data.sync.presence.devices - 1 }}
+      </span>
+    </div>
+
+    <div
+      *ngIf="data.sync.status && data.sync.presence?.users > 1"
+      ngbTooltip="{{ data.sync.presence.users - 1 }} other {{
+        data.sync.presence.users - 1 > 1 ? 'users' : 'user'
+      }} connected"
+      class="badge badge-custom align-middle"
+    >
+      <app-svg icon="people"></app-svg>
+      <span class="number-indicator">
+        {{ data.sync.presence.users - 1 }}
       </span>
     </div>
 
@@ -118,10 +133,8 @@
         <ng-container *ngIf="!!data.user">
           <div>
             <h6 class="dropdown-header d-flex flex-column">
-              <p class="mb-1">
-                {{ data?.user?.email }}
-              </p>
               <div class="d-flex align-items-center">
+                <div class="pe-2">{{ data?.user?.email }}</div>
                 <div class="badge text-bg-warning">
                   {{ planLabels[data.user?.plan] }} plan
                 </div>

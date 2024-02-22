@@ -2,17 +2,37 @@ import { Environments, Folder } from '@mockoon/commons';
 import { ContextMenuItem } from 'src/renderer/app/models/context-menu.model';
 
 export const CloudEnvironmentsContextMenu = (
-  environmentUuid: string
+  environmentUuid: string,
+  syncStatus: boolean
 ): ContextMenuItem[] => [
   {
     payload: {
       subject: 'environment',
-      action: 'convertToLocal',
+      action: 'duplicateToCloud',
       subjectUUID: environmentUuid
     },
-    label: 'Convert to local (delete from cloud)',
-    icon: 'cloud_remove',
-    separator: false,
+    label: 'Duplicate to the cloud',
+    icon: 'cloud',
+    disabled: !syncStatus
+  },
+  {
+    payload: {
+      subject: 'environment',
+      action: 'duplicate',
+      subjectUUID: environmentUuid
+    },
+    label: 'Duplicate to local',
+    icon: 'content_copy',
+    disabled: false
+  },
+  {
+    payload: {
+      subject: 'environment',
+      action: 'copyJSON',
+      subjectUUID: environmentUuid
+    },
+    label: 'Copy configuration to clipboard (JSON)',
+    icon: 'assignment',
     disabled: false
   },
   {
@@ -24,6 +44,17 @@ export const CloudEnvironmentsContextMenu = (
     label: 'Show local backup data file in explorer/finder',
     icon: 'folder',
     disabled: false
+  },
+  {
+    payload: {
+      subject: 'environment',
+      action: 'convertToLocal',
+      subjectUUID: environmentUuid
+    },
+    label: 'Convert to local (delete from cloud)',
+    icon: 'cloud_remove',
+    separator: false,
+    disabled: false
   }
 ];
 
@@ -34,10 +65,10 @@ export const EnvironmentsContextMenu = (
   {
     payload: {
       subject: 'environment',
-      action: 'cloudSyncEnable',
+      action: 'duplicateToCloud',
       subjectUUID: environmentUuid
     },
-    label: 'Create a cloud copy',
+    label: 'Duplicate to the cloud',
     icon: 'cloud',
     disabled: !syncStatus
   },
@@ -47,7 +78,7 @@ export const EnvironmentsContextMenu = (
       action: 'duplicate',
       subjectUUID: environmentUuid
     },
-    label: 'Duplicate',
+    label: 'Duplicate to local',
     icon: 'content_copy',
     disabled: false
   },

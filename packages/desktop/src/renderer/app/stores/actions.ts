@@ -34,7 +34,7 @@ import {
 export const enum ActionTypes {
   CONVERT_ENVIRONMENT_TO_LOCAL = 'CONVERT_ENVIRONMENT_TO_LOCAL',
   UPDATE_USER = 'UPDATE_USER',
-  UPDATE_SYNC = 'UPDATE_CLOUD_INFO',
+  UPDATE_SYNC = 'UPDATE_SYNC',
   SET_ACTIVE_TAB = 'SET_ACTIVE_TAB',
   SET_ACTIVE_TAB_IN_CALLBACK = 'SET_ACTIVE_TAB_IN_CALLBACK',
   SET_ACTIVE_VIEW = 'SET_ACTIVE_VIEW',
@@ -114,9 +114,9 @@ export const updateUserAction = (properties: Partial<User>) =>
   }) as const;
 
 /**
- * Update the cloud information
+ * Update the cloud sync information
  *
- * @param properties - user properties to update
+ * @param properties - cloud sync status properties to update
  */
 export const updateSyncAction = (properties: Partial<StoreType['sync']>) =>
   ({

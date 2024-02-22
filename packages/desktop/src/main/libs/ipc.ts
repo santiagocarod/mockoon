@@ -23,10 +23,7 @@ import {
   IPCMainListenerChannels
 } from 'src/main/constants/ipc.constants';
 import { logError, logInfo } from 'src/main/libs/logs';
-import {
-  toggleEnvironmentMenuItems,
-  toggleRouteMenuItems
-} from 'src/main/libs/menu';
+import { updateMenuState } from 'src/main/libs/menu';
 import { showFolderInExplorer } from 'src/main/libs/paths';
 import { ServerInstance } from 'src/main/libs/server-management';
 import {
@@ -46,6 +43,7 @@ import {
   handleZoomOut,
   handleZoomReset
 } from 'src/main/libs/zoom';
+import { MenuStateUpdatePayload } from 'src/shared/models/ipc.model';
 import {
   EnvironmentDescriptor,
   Settings
@@ -81,21 +79,12 @@ export const initIPCListeners = (mainWindow: BrowserWindow) => {
     mainWindow.hide();
   });
 
-  ipcMain.on('APP_DISABLE_ENVIRONMENT_MENU_ENTRIES', () => {
-    toggleEnvironmentMenuItems(false);
-  });
-
-  ipcMain.on('APP_ENABLE_ENVIRONMENT_MENU_ENTRIES', () => {
-    toggleEnvironmentMenuItems(true);
-  });
-
-  ipcMain.on('APP_DISABLE_ROUTE_MENU_ENTRIES', () => {
-    toggleRouteMenuItems(false);
-  });
-
-  ipcMain.on('APP_ENABLE_ROUTE_MENU_ENTRIES', () => {
-    toggleRouteMenuItems(true);
-  });
+  ipcMain.on(
+    'APP_UPDATE_MENU_STATE',
+    (event, state: MenuStateUpdatePayload) => {
+      updateMenuState(state);
+    }
+  );
 
   ipcMain.on('APP_LOGS', (event, data) => {
     if (data.type === 'info') {

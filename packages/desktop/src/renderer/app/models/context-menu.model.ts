@@ -8,7 +8,7 @@ export type ContextMenuEvent = {
 export type ContextMenuItemPayload = {
   subject: DataSubject;
   action:
-    | 'cloudSyncEnable'
+    | 'duplicateToCloud'
     | 'convertToLocal'
     | 'add_crud_route'
     | 'add_http_route'

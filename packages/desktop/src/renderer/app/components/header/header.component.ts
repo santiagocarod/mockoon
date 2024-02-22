@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Environment } from '@mockoon/commons';
 import { BehaviorSubject, EMPTY, Observable, from } from 'rxjs';
-import { catchError, filter, map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { MainAPI } from 'src/renderer/app/constants/common.constants';
 import { EnvironmentLog } from 'src/renderer/app/models/environment-logs.model';
 import {
@@ -70,8 +70,7 @@ export class HeaderComponent implements OnInit {
         title: 'Routes',
         icon: 'endpoints',
         count$: this.activeEnvironment$.pipe(
-          filter((environment) => !!environment),
-          map((environment) => environment.routes.length)
+          map((environment) => (environment ? environment.routes.length : null))
         )
       },
       {
@@ -79,8 +78,7 @@ export class HeaderComponent implements OnInit {
         title: 'Data',
         icon: 'data',
         count$: this.activeEnvironment$.pipe(
-          filter((environment) => !!environment),
-          map((environment) => environment.data.length)
+          map((environment) => (environment ? environment.data.length : null))
         )
       },
       {
@@ -88,8 +86,9 @@ export class HeaderComponent implements OnInit {
         title: 'Headers',
         icon: 'featured_play_list',
         count$: this.activeEnvironment$.pipe(
-          filter((environment) => !!environment),
-          map((environment) => environment.headers.length)
+          map((environment) =>
+            environment ? environment.headers.length : null
+          )
         )
       },
       {
@@ -97,8 +96,9 @@ export class HeaderComponent implements OnInit {
         title: 'Callbacks',
         icon: 'call_made',
         count$: this.activeEnvironment$.pipe(
-          filter((environment) => !!environment),
-          map((environment) => environment.callbacks.length)
+          map((environment) =>
+            environment ? environment.callbacks.length : null
+          )
         )
       },
       {
@@ -106,8 +106,9 @@ export class HeaderComponent implements OnInit {
         title: 'Logs',
         icon: 'history',
         count$: this.environmentLogs$.pipe(
-          filter((environmentLogs) => !!environmentLogs),
-          map((environmentLogs) => environmentLogs.length)
+          map((environmentLogs) =>
+            environmentLogs ? environmentLogs.length : null
+          )
         )
       },
       {

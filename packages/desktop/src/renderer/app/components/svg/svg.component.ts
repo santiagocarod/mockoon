@@ -37,6 +37,7 @@ export class SvgComponent {
     | 'magic'
     | 'spinner'
     | 'account'
+    | 'people'
     | 'endpoint'
     | 'endpoints'
     | 'play_arrow'
